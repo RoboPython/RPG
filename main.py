@@ -1,19 +1,6 @@
 import random
 
 
-9966699999966699999966699966669996699999996699666996699
-9966999999996999999996666996699666699666996699666996699 
-9966699999999999999966666699996666699666996699666996699 
-9966666999999999999666666669966666699666996699666996699 
-9966666669999999966666666669966666699666996699666996699 
-9966666666699996666666666669966666699666996699666996666 
-9966666666669966666666666669966666699999996699999996699
-
-
-
-
-
-
 class Player(object):
 
 	def __init__(self,name,currentLocation):
@@ -53,6 +40,9 @@ class Player(object):
 				self.currentLocation = self.currentLocation.directions[directionlist[0]]
 				self.currentPlace = self.currentLocation
 				print "Welcome to " + self.currentLocation.name + " \n"
+				print self.currentLocation.description
+				print "Here you see the following shops: " + ", ".join(self.currentLocation.listOfShops.keys())
+
 
 			else:
 				print "You can't go that way \n"
@@ -76,10 +66,11 @@ class Player(object):
 		try:
 			self.currentLocation =  self.currentLocation.listOfShops[typeOfShop[0]]
 			print "You enter the " + typeOfShop[0] + "\n"
+                            
 		except:
 			print "Sorry there is no shop like that here"
 
-	def leave(self, typeOfShop):
+	def leave(self,shopType):
 		if self.currentLocation.__class__.__name__ == "Shop":
 			print "you leave the shop and come back into " + self.currentPlace.name
 			self.currentLocation = self.currentPlace
@@ -132,8 +123,20 @@ class Shop(object):
 
 	def __init__(self,shopType):
 		self.shopType = shopType
-		self.shopTypeToInventory = {"blacksmith":{"sword":[Weapon("sword"),10],"axe":[Weapon("axe"),10],"dagger":[Weapon("dagger"),10]}}
-		self.inventory = self.shopTypeToInventory[self.shopType]
+		self.shopTypeToInventory = {"blacksmith":[[Weapon("sword"),10],[Weapon("axe"),10],[Weapon("dagger"),10]]}
+		self.inventoryList = self.shopTypeToInventory[self.shopType]
+                self.inventory = self.listToInv(self.inventoryList)
+
+
+        def listToInv(self,listOfItems):
+            inventory = {}
+            for item in self.inventoryList:
+                inventory[item[0].name] = item
+            return inventory
+
+
+            
+
 
 class Creature(object):
 
@@ -206,10 +209,8 @@ Olivine = Place("Port Olivine","Shithole",{"blacksmith":Shop("blacksmith")})
 '''
 
 Azalea.directions["south"] = VioletCity
-
 VioletCity.directions["north"] = Azalea
 VioletCity.directions["south"] = Olivine
-
 Olivine.directions["north"] = VioletCity
 
 '''
@@ -218,21 +219,21 @@ Olivine.directions["north"] = VioletCity
 
 
 ourPlayer = Player(None,Azalea)
-'''
+
 print "Good morrow Adventurer! What is your name? \n"
 ourPlayer.name = raw_input()
 print " \n Nice to meet you "+ourPlayer.name+". What race are you? \n"
 ourPlayer.race = raw_input()
 print "\n Oh so you're a "+ourPlayer.race+". Let me tell you about the world. \n"
 print"filler text \n"
-'''
+
 
 #print ourPlayer.currentLocation.description
 
 
 while True:
 
-	command = raw_input()
+	command = raw_input(">>")
 	print ""
 	command = command.split("then")
 	for c in command:
